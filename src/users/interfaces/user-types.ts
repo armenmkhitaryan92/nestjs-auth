@@ -5,10 +5,14 @@ export interface ReturnAddress {
   suite: string | null;
   city: string | null;
   zipcode: string | null;
-  geo: {
-    lat: string | null;
-    lng: string | null;
-  };
+  lat: string | null;
+  lng: string | null;
+}
+
+export interface ReturnCompany {
+  name: string | null;
+  catchPhrase: string | null;
+  bs: string | null;
 }
 
 export interface ReturnUser {
@@ -21,5 +25,30 @@ export interface ReturnUser {
   role: UserRole;
   isActive: boolean;
   address: ReturnAddress | null;
+  company: ReturnCompany | null;
   createdAt: Date;
 }
+
+export type CreateUserData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone?: string | null;
+  website?: string | null;
+
+  address?: {
+    street: string | null;
+    suite: string | null;
+    city: string | null;
+    zipcode: string | null;
+    lat: string | null;
+    lng: string | null;
+  } | null;
+
+  company?: {
+    name: string | null;
+    catchPhrase: string | null;
+    bs: string | null;
+  } | null;
+};

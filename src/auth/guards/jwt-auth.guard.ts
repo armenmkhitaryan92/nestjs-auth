@@ -30,8 +30,6 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
 
-      console.log('Decoded payload:', payload);
-
       request.user = payload;
     } catch (error: unknown) {
       console.error('JWT verification failed:', error);

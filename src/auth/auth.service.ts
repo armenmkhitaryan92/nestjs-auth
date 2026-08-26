@@ -3,12 +3,12 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UsersService } from '../users/users.service';
+import { CreateUserData, ReturnUser } from '../users/interfaces/user-types';
 import {
   ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ReturnUser } from '../users/interfaces/user-types';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +30,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 12);
 
-    const user = await this.usersService.create({
+    const userToCreate: CreateUserData = {
       firstName: registerDto.firstName.trim(),
       lastName: registerDto.lastName.trim(),
       email,
@@ -45,37 +45,26 @@ export class AuthService {
             suite: registerDto.address.suite?.trim() || null,
             city: registerDto.address.city?.trim() || null,
             zipcode: registerDto.address.zipcode?.trim() || null,
-            lat: registerDto.address.geo?.lat ?? null,
-            lng: registerDto.address.geo?.lng ?? null,
+            lat: registerDto.address?.lat ?? null,
+            lng: registerDto.address?.lng ?? null,
           }
         : null,
-    });
 
-    return {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      website: user.website,
-      phone: user.phone,
-      role: user.role,
-      isActive: user.isActive,
-
-      address: user.address
+      company: registerDto.company
         ? {
-            street: user.address.street ?? null,
-            suite: user.address.suite ?? null,
-            city: user.address.city ?? null,
-            zipcode: user.address.zipcode ?? null,
-            geo: {
-              lat: user.address?.lat ?? null,
-              lng: user.address?.lng ?? null,
-            },
+            name: registerDto.company.name?.trim() || null,
+            catchPhrase: registerDto.company.catchPhrase?.trim() || null,
+            bs: registerDto.company.bs?.trim() || null,
           }
         : null,
-
-      createdAt: user.createdAt,
     };
+
+    const user = await this.usersService.create(userToCreate);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...returnUser } = user;
+
+    return returnUser;
   }
 
   async login(
@@ -112,33 +101,12 @@ export class AuthService {
       expiresIn: '1d',
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...returnUser } = user;
+
     return {
       accessToken,
-      user: {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        website: user.website,
-        phone: user.phone,
-        role: user.role,
-        isActive: user.isActive,
-
-        address: user.address
-          ? {
-              street: user.address.street ?? null,
-              suite: user.address.suite ?? null,
-              city: user.address.city ?? null,
-              zipcode: user.address.zipcode ?? null,
-              geo: {
-                lat: user.address?.lat ?? null,
-                lng: user.address?.lng ?? null,
-              },
-            }
-          : null,
-
-        createdAt: user.createdAt,
-      },
+      user: returnUser,
     };
   }
 }

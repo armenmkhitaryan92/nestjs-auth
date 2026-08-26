@@ -2,24 +2,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-
-export type CreateUserData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone?: string | null;
-  website?: string | null;
-
-  address?: {
-    street: string | null;
-    suite: string | null;
-    city: string | null;
-    zipcode: string | null;
-    lat: string | null;
-    lng: string | null;
-  } | null;
-};
+import { CreateUserData } from './interfaces/user-types';
 
 @Injectable()
 export class UsersService {
@@ -29,10 +12,10 @@ export class UsersService {
   ) {}
 
   public findAll() {
-    console.log('Get all users');
     return this.usersRepository.find({
       relations: {
         address: true,
+        company: true,
       },
     });
   }

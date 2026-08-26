@@ -11,14 +11,21 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class GeoDto {
+export class CompanyDto {
   @IsOptional()
-  @IsLatitude()
-  lat?: string;
+  @IsString()
+  @MaxLength(255)
+  name?: string;
 
   @IsOptional()
-  @IsLongitude()
-  lng?: string;
+  @IsString()
+  @MaxLength(100)
+  catchPhrase?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  bs?: string;
 }
 
 export class AddressDto {
@@ -43,9 +50,12 @@ export class AddressDto {
   zipcode?: string;
 
   @IsOptional()
-  @ValidateNested()
-  @Type(() => GeoDto)
-  geo?: GeoDto;
+  @IsLatitude()
+  lat?: string;
+
+  @IsOptional()
+  @IsLongitude()
+  lng?: string;
 }
 
 export class RegisterDto {
@@ -82,4 +92,9 @@ export class RegisterDto {
   @ValidateNested()
   @Type(() => AddressDto)
   address?: AddressDto;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CompanyDto)
+  company?: CompanyDto;
 }

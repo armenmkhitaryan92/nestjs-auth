@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Company } from './copany.entity';
 import { Address } from './address.entity';
 
 @Entity('users')
@@ -68,6 +69,12 @@ export class User {
     nullable: true,
   })
   address: Address | null;
+
+  @OneToOne(() => Company, (company) => company.user, {
+    cascade: true,
+    nullable: true,
+  })
+  company: Company | null;
 
   @CreateDateColumn()
   createdAt: Date;
