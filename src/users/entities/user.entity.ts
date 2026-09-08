@@ -1,14 +1,16 @@
+import { Company } from './copany.entity';
+import { Address } from './address.entity';
 import { UserRole } from '../enums/user-role.enum';
+import { Post } from '../../posts/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Company } from './copany.entity';
-import { Address } from './address.entity';
 
 @Entity('users')
 // User Table in Database
@@ -75,6 +77,9 @@ export class User {
     nullable: true,
   })
   company: Company | null;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 
   @CreateDateColumn()
   createdAt: Date;
