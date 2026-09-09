@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -43,8 +43,18 @@ export class PostsService {
     return await this.postsRepository.save(post);
   }
 
-  public findAll() {
-    return this.postsRepository.find();
+  public findAll(title?: string) {
+    const t = title?.trim();
+
+    if (!t) {
+      return this.postsRepository.find();
+    }
+
+    return this.postsRepository.find({
+      where: {
+        title: ILike(`%${t}%`),
+      },
+    });
   }
 
   public findOne(id: string) {
