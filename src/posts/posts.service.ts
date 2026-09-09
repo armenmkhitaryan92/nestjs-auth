@@ -57,10 +57,14 @@ export class PostsService {
     });
   }
 
-  public findOne(id: string) {
-    return this.postsRepository.findOne({
-      where: { id },
-    });
+  public async findOne(id: string) {
+    const post = await this.postsRepository.findOne({ where: { id } });
+
+    if (!post) {
+      throw new NotFoundException(`Post with ID ${id} not found`);
+    }
+
+    return post;
   }
 
   public async update(id: string, updatePostDto: UpdatePostDto) {
